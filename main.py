@@ -6,7 +6,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route("/hello")
 def hello():
-    result = {"code": 200, "message": "jenkins test2"}
+    result = {"code": 200, "message": "jenkins test3"}
     return result
 
 
