@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: backend-deployment
+spec:
+ selector:
+   matchLabels:
+    type: backend
+ replicas: 2
+ template:
+   metadata:
+     labels:
+       type: backend
+   spec:
+    containers:
+    - name: backend
+      image: cloudcamp2022/backend:latest
+      envFrom:
+      ports:
+      - containerPort: 8000
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          cpu: 200m
