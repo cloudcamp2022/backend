@@ -16,6 +16,10 @@ spec:
     - name: backend
       image: cloudcamp2022/backend:latest
       envFrom:
+        - configMapRef:
+            name: mysql-cm
+        - secretRef:
+            name: mysql-sec
       ports:
       - containerPort: 8000
       resources:
