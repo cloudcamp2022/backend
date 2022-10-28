@@ -1,31 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: backend-deployment
+  name: backend-deployment
+  labels:
+    type: web
+    app: backend
 spec:
- selector:
-   matchLabels:
-     type: web
-     app: backend
- replicas: 2
- template:
-   metadata:
-     labels:
-       type: web
-       app: backend
-   spec:
-    containers:
-    - name: backend
-      image: cloudcamp2022/backend:latest
-      envFrom:
-        - configMapRef:
-            name: mysql-cm
-        - secretRef:
-            name: mysql-sec
-      ports:
-      - containerPort: 8000
-      resources:
-        requests:
-          cpu: 100m
-        limits:
-          cpu: 200m
+  selector:
+    matchLabels:
+      type: web
+      app: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        type: web
+        app: backend
+        version: vlatest
+    spec:
+      containers:
+      - name: backend
+        image: cloudcamp2022/backend:latest
+        envFrom:
+          - configMapRef:
+              name: mysql-cm
+          - secretRef:
+              name: mysql-sec
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 200m
