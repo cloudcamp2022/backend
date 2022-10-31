@@ -1,31 +1,30 @@
-from flask import Flask
 from flask_cors import CORS
 import pymysql
 import os
-import opentracing
-from flask_opentracing import FlaskTracing
-
-from flask import Flask, jsonify
+from flask import Flask
 from jaeger_client import Config
+import logging
 from flask_opentracing import FlaskTracer
 
-app = Flask(__name__)
+
+def init_tracer(service):
+    logging.getLogger('').handlers = []
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+
+    config = Config(
+        config={ # usually read from some yaml config
+            'sampler': {'type': 'const', 'param': 1, },
+            'logging': True,
+            'reporter_batch_size': 1,
+        },
+        service_name=service,
+    )
+    return config.initialize_tracer()
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-
-
-def initialize_tracer():
-    "Tracing setup method"
-    config = Config(
-        config={
-            'sampler': {'type': 'const', 'param': 1},
-        },
-        service_name='tasks-service')
-    return config.initialize_tracer()
-
-
-tracing = FlaskTracer(lambda: initialize_tracer(), True, app)
+tracer = init_tracer('backend')
+flask_tracer = FlaskTracer(tracer, True, app, ['url','url_rule','method','path','environ.HTTP_X_REAL_IP'])
 
 
 @app.route("/hello")
